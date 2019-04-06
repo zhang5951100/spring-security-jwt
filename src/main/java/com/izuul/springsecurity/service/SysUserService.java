@@ -28,7 +28,7 @@ public class SysUserService implements UserDetailsService {
     private PasswordEncoder passwordEncoder;
 
     /**
-     * 初始化2个用户
+     * 初始化2个认证用户
      */
     @PostConstruct
     private void init() {
