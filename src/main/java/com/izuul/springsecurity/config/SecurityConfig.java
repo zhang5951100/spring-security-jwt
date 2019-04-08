@@ -44,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 根路径 "/" 允许全部访问请求
                 .antMatchers("/").permitAll()
                 // 路径 "/user/**" 只允许
-                .antMatchers("/users/**").hasRole("ADMIN")
+                .antMatchers("/users/**").hasRole("USER")
                 .and()
                 .formLogin().loginPage("/login").failureUrl("/login-error")
                 .and()
