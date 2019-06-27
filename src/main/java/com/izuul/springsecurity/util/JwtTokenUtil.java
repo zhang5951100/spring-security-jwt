@@ -1,4 +1,4 @@
-package com.izuul.springsecurity;
+package com.izuul.springsecurity.util;
 
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,7 +25,7 @@ public class JwtTokenUtil {
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() +  60 * 60 * 24 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
                 .compact();
     }
 
@@ -35,7 +35,7 @@ public class JwtTokenUtil {
 
         final Jws claimsJws = jwtParser.parseClaimsJws(token);
 
-        final Claims claims = (Claims)claimsJws.getBody();
+        final Claims claims = (Claims) claimsJws.getBody();
 
         final Collection authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
@@ -46,11 +46,10 @@ public class JwtTokenUtil {
     }
 
     public String getUsernameFromToken(String authToken) {
-        String subject = Jwts.parser().setSigningKey(SIGNING_KEY)
+        return Jwts.parser().setSigningKey(SIGNING_KEY)
                 .parseClaimsJws(authToken)
                 .getBody()
                 .getSubject();
-        return subject;
     }
 
     public boolean validateToken(String authToken, UserDetails userDetails) {

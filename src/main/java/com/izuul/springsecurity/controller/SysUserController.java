@@ -2,7 +2,7 @@ package com.izuul.springsecurity.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.izuul.springsecurity.JwtTokenUtil;
+import com.izuul.springsecurity.util.JwtTokenUtil;
 import com.izuul.springsecurity.entity.SysUser;
 import com.izuul.springsecurity.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
@@ -52,8 +52,8 @@ public class SysUserController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value="/admin")
-    public String hasRole(){
+    @GetMapping(value = "/admin")
+    public String hasRole() {
         return "hasRole ADMIN";
     }
 

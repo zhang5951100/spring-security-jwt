@@ -1,6 +1,6 @@
 package com.izuul.springsecurity.config;
 
-import com.izuul.springsecurity.JwtTokenUtil;
+import com.izuul.springsecurity.util.JwtTokenUtil;
 import com.izuul.springsecurity.service.SysUserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
