@@ -38,7 +38,7 @@ public class SysUserService implements UserDetailsService {
 
             SysUser sysAdmin = new SysUser();
             sysAdmin.setUsername("admin");
-            sysAdmin.setPassword(passwordEncoder.encode("123"));
+            sysAdmin.setPassword(passwordEncoder.encode("admin"));
             List<SysRole> sysRolesAdmin = new ArrayList<>();
             sysRolesAdmin.add(roleAdmin);
             sysAdmin.setSysRoles(sysRolesAdmin);
@@ -62,8 +62,6 @@ public class SysUserService implements UserDetailsService {
             sysUserRepository.save(sysUser);
 
         }
-
-
     }
 
     @Override
@@ -71,5 +69,22 @@ public class SysUserService implements UserDetailsService {
         return sysUserRepository.findByUsername(username);
     }
 
+    /**
+     * 注册
+     */
+    public SysUser register(SysUser sysUser) {
+        if (sysUserRepository.findByUsername(sysUser.getUsername()) == null) {
+            SysRole roleUser = sysRoleRepository.findByName("ROLE_USER");
 
+            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+            List<SysRole> sysRolesUser = new ArrayList<>();
+            sysRolesUser.add(roleUser);
+            sysUser.setSysRoles(sysRolesUser);
+
+            SysUser user = sysUserRepository.save(sysUser);
+            user.setPassword(null);
+            return user;
+        }
+        return null;
+    }
 }
