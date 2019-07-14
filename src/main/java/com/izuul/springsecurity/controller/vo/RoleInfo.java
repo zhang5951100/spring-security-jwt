@@ -14,6 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class RoleInfo {
 
+    private String key;
     private String name;
     private String description;
     private List<SysRoute> routes;

@@ -3,6 +3,7 @@ package com.izuul.springsecurity.entity;
 import com.izuul.springsecurity.util.converter.ChildrenConverter;
 import com.izuul.springsecurity.util.converter.MetaConverter;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.util.List;
  * @date 2019-07-14 14:14
  */
 @Data
+@Accessors(chain = true)
 @Entity(name = "SYS_ROUTE")
 public class SysRoute implements Serializable {
     private static final long serialVersionUID = 563998596703990469L;

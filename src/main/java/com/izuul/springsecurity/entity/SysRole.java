@@ -1,6 +1,7 @@
 package com.izuul.springsecurity.entity;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
@@ -13,6 +14,7 @@ import java.util.List;
  * @date 2019-07-14 09:47
  */
 @Data
+@Accessors(chain = true)
 @Entity(name = "SYS_ROLE")
 public class SysRole implements GrantedAuthority, Serializable {
 
