@@ -34,5 +34,5 @@ public class SysRoute implements Serializable {
     @Column(name = "hidden")
     private boolean hidden;
 
-    private List<SysRoute> children;
+//    private List<SysRoute> children;
 }

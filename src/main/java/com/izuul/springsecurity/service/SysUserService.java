@@ -46,10 +46,12 @@ public class SysUserService implements UserDetailsService {
         if (sysUserRepository.findByUsername("admin") == null) {
             SysRole roleAdmin = new SysRole();
             roleAdmin.setName("ROLE_ADMIN");
+            roleAdmin.setDescription("系统管理员");
 
             SysUser sysAdmin = new SysUser();
             sysAdmin.setUsername("admin");
             sysAdmin.setPassword(passwordEncoder.encode("111111"));
+            sysAdmin.setIntroduction("系统管理员");
             List<SysRole> sysRolesAdmin = new ArrayList<>();
             sysRolesAdmin.add(roleAdmin);
             sysAdmin.setSysRoles(sysRolesAdmin);
@@ -61,10 +63,12 @@ public class SysUserService implements UserDetailsService {
         if (sysUserRepository.findByUsername("user") == null) {
             SysRole roleUser = new SysRole();
             roleUser.setName("ROLE_USER");
+            roleUser.setDescription("普通用户");
 
             SysUser sysUser = new SysUser();
             sysUser.setUsername("user");
             sysUser.setPassword(passwordEncoder.encode("111111"));
+            sysUser.setIntroduction("普通用户");
             List<SysRole> sysRolesUser = new ArrayList<>();
             sysRolesUser.add(roleUser);
             sysUser.setSysRoles(sysRolesUser);
@@ -115,7 +119,7 @@ public class SysUserService implements UserDetailsService {
 
         userInfo.setName(sysUser.getUsername())
                 .setAvatar("https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3")
-                .setIntroduction("管理员")
+                .setIntroduction(sysUser.getIntroduction())
                 .setRoles(roles);
 
         return userInfo;

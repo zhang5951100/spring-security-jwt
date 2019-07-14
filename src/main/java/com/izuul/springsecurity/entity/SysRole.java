@@ -4,11 +4,9 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author Guihong.Zhang
@@ -31,6 +29,11 @@ public class SysRole implements GrantedAuthority, Serializable {
 
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @ManyToMany
+    @JoinTable(name = "ROLE_ROUTE", joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"),
+            inverseJoinColumns = @JoinColumn(name = "ROUTE_ID", referencedColumnName = "ID"))
+    private List<SysRoute> sysRoutes;
 
     @Override
     public String getAuthority() {
