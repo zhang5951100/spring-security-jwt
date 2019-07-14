@@ -12,6 +12,10 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
+/**
+ * @author Guihong.Zhang
+ * @date 2019-07-14 09:47
+ */
 public class JwtTokenUtil {
     private static String AUTHORITIES_KEY = "authorities";
     private static String SIGNING_KEY = "MyJwtSecret";

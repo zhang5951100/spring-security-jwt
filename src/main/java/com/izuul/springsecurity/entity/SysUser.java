@@ -10,6 +10,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Guihong.Zhang
+ * @date 2019-07-14 09:47
+ */
 @Data
 @Entity(name = "SYS_USER")
 public class SysUser implements UserDetails, Serializable {

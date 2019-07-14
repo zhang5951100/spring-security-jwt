@@ -19,6 +19,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author Guihong.Zhang
+ * @date 2019-07-14 09:47
+ */
 @Slf4j
 @Service
 public class SysUserService implements UserDetailsService {

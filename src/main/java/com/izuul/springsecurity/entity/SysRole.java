@@ -10,6 +10,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.Serializable;
 
+/**
+ * @author Guihong.Zhang
+ * @date 2019-07-14 09:47
+ */
 @Data
 @Entity(name = "SYS_ROLE")
 public class SysRole implements GrantedAuthority, Serializable {
