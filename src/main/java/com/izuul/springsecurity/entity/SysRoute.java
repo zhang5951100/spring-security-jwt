@@ -1,12 +1,11 @@
 package com.izuul.springsecurity.entity;
 
+import com.izuul.springsecurity.util.converter.ChildrenConverter;
+import com.izuul.springsecurity.util.converter.MetaConverter;
 import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
 
@@ -28,11 +27,23 @@ public class SysRoute implements Serializable {
     @Column(name = "PATH")
     private String path;
 
-    @Column(name = "component")
+    @Column(name = "COMPONENT")
     private String component;
 
-    @Column(name = "hidden")
+    @Column(name = "REDIRECT")
+    private String redirect;
+
+    @Column(name = "ALWAYS_SHOW")
+    private boolean alwaysShow;
+
+    @Column(name = "HIDDEN")
     private boolean hidden;
 
-//    private List<SysRoute> children;
+    @Convert(converter = MetaConverter.class)
+    @Column(name = "META",length = 1024)
+    private Meta meta;
+
+    @Convert(converter = ChildrenConverter.class)
+    @Column(name = "CHILDREN",length = 2048)
+    private List<Child> children;
 }

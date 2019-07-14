@@ -3,6 +3,8 @@ package com.izuul.springsecurity.controller;
 import com.izuul.springsecurity.controller.vo.CodeEnum;
 import com.izuul.springsecurity.controller.vo.Result;
 import com.izuul.springsecurity.controller.vo.RoleInfo;
+import com.izuul.springsecurity.controller.vo.RouteInfo;
+import com.izuul.springsecurity.entity.SysRoute;
 import com.izuul.springsecurity.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,15 @@ public class SysRoleController {
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .data(roles)
+                .build(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/routes", method = RequestMethod.GET)
+    public ResponseEntity route() {
+        List<SysRoute> sysRoutes = sysRoleService.getRoutes();
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .data(sysRoutes)
                 .build(), HttpStatus.OK);
     }
 }

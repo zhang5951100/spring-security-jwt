@@ -30,7 +30,7 @@ public class SysRole implements GrantedAuthority, Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade={CascadeType.PERSIST,CascadeType.MERGE})
     @JoinTable(name = "ROLE_ROUTE", joinColumns = @JoinColumn(name = "ROLE_ID", referencedColumnName = "ID"),
             inverseJoinColumns = @JoinColumn(name = "ROUTE_ID", referencedColumnName = "ID"))
     private List<SysRoute> sysRoutes;

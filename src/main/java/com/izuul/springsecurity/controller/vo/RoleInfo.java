@@ -1,5 +1,6 @@
 package com.izuul.springsecurity.controller.vo;
 
+import com.izuul.springsecurity.entity.SysRoute;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -13,8 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class RoleInfo {
 
-    private String key;
     private String name;
     private String description;
-    private List<RouteInfo> routes;
+    private List<SysRoute> routes;
 }
