@@ -48,9 +48,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable().authorizeRequests()
                 // 根路径 "/" 允许全部访问请求
-                .antMatchers("/", "/users/login", "/users/register").permitAll()
+                .antMatchers("/", "/user/login", "/user/register").permitAll()
                 // 路径 "/user/**" 只允许
-                .antMatchers("/users/**").hasRole("USER")
+//                .antMatchers("/user/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
 //                .and()
 //                .logout().logoutSuccessUrl("/logout")

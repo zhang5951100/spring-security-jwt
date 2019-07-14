@@ -2,6 +2,9 @@ package com.izuul.springsecurity.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.izuul.springsecurity.controller.vo.CodeEnum;
+import com.izuul.springsecurity.controller.vo.Result;
+import com.izuul.springsecurity.controller.vo.UserInfo;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import com.izuul.springsecurity.entity.SysUser;
 import com.izuul.springsecurity.service.SysUserService;
@@ -15,11 +18,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
 public class SysUserController {
     @Autowired
     private ObjectMapper objectMapper;
@@ -32,6 +39,9 @@ public class SysUserController {
 
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
+    /**
+     * 用户登录
+     */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity token(@RequestBody SysUser sysUser) throws AuthenticationException {
 
@@ -42,22 +52,53 @@ public class SysUserController {
                 )
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        final String token = jwtTokenUtil.generateToken(authentication);
-        return ResponseEntity.ok("Bearer " + token);
+        final String token = "Bearer " + jwtTokenUtil.generateToken(authentication);
+
+        return ResponseEntity.ok(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .message(CodeEnum.SUCCESS.getMsg())
+                .data(token)
+                .build());
     }
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "hello jwt";
+    /**
+     * 获取用户信息
+     */
+    @RequestMapping(value = "/info", method = RequestMethod.GET)
+    public ResponseEntity info(HttpServletRequest req) {
+
+        UserInfo userInfo = sysUserService.getUserInfo(req);
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .message(CodeEnum.SUCCESS.getMsg())
+                .data(userInfo).build(), HttpStatus.OK);
+    }
+
+    /**
+     * 用户注销
+     */
+    @RequestMapping(value = "/logout", method = RequestMethod.POST)
+    public ResponseEntity logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .data(CodeEnum.SUCCESS.getMsg())
+                .build(), HttpStatus.OK);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(value = "/admin")
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public String hasRole() {
         return "hasRole ADMIN";
     }
 
-    @PostMapping("/register")
+    /**
+     * 用户注册
+     */
+    @RequestMapping(value = "/register", method = RequestMethod.GET)
     public ResponseEntity register(@RequestBody SysUser sysUser) {
 
         try {

@@ -1,9 +1,12 @@
 package com.izuul.springsecurity.service;
 
+import com.izuul.springsecurity.controller.vo.UserInfo;
 import com.izuul.springsecurity.entity.SysRole;
 import com.izuul.springsecurity.entity.SysUser;
 import com.izuul.springsecurity.repository.SysRoleRepository;
 import com.izuul.springsecurity.repository.SysUserRepository;
+import com.izuul.springsecurity.util.JwtTokenUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -12,9 +15,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Service
 public class SysUserService implements UserDetailsService {
 
@@ -27,6 +32,8 @@ public class SysUserService implements UserDetailsService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
+
     /**
      * 初始化2个认证用户
      */
@@ -38,7 +45,7 @@ public class SysUserService implements UserDetailsService {
 
             SysUser sysAdmin = new SysUser();
             sysAdmin.setUsername("admin");
-            sysAdmin.setPassword(passwordEncoder.encode("admin"));
+            sysAdmin.setPassword(passwordEncoder.encode("111111"));
             List<SysRole> sysRolesAdmin = new ArrayList<>();
             sysRolesAdmin.add(roleAdmin);
             sysAdmin.setSysRoles(sysRolesAdmin);
@@ -53,7 +60,7 @@ public class SysUserService implements UserDetailsService {
 
             SysUser sysUser = new SysUser();
             sysUser.setUsername("user");
-            sysUser.setPassword(passwordEncoder.encode("123"));
+            sysUser.setPassword(passwordEncoder.encode("111111"));
             List<SysRole> sysRolesUser = new ArrayList<>();
             sysRolesUser.add(roleUser);
             sysUser.setSysRoles(sysRolesUser);
@@ -86,5 +93,27 @@ public class SysUserService implements UserDetailsService {
             return user;
         }
         return null;
+    }
+
+    /**
+     * 获取用户信息
+     */
+    public UserInfo getUserInfo(HttpServletRequest req) {
+        UserInfo userInfo = new UserInfo();
+        List<String> roles = new ArrayList<>();
+
+        String header = req.getHeader("Authorization");
+        String authToken = header.replace("Bearer ", "");
+        String username = jwtTokenUtil.getUsernameFromToken(authToken);
+
+        SysUser sysUser = (SysUser) this.loadUserByUsername(username);
+        sysUser.getSysRoles().forEach(r -> roles.add(r.getName()));
+
+        userInfo.setName(sysUser.getUsername())
+                .setAvatar("https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3")
+                .setIntroduction("管理员")
+                .setRoles(roles);
+
+        return userInfo;
     }
 }
