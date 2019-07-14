@@ -23,7 +23,7 @@ public class SysUser implements UserDetails, Serializable {
     @Id
     @GenericGenerator(name = "system-uuid", strategy = "uuid2")
     @GeneratedValue(generator = "system-uuid")
-    @Column(name = "ID")
+    @Column(name = "ID", length = 40)
     private String id;
 
     @Column(name = "USERNAME")
