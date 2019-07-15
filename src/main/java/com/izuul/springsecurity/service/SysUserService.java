@@ -22,10 +22,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Guihong.Zhang
@@ -146,5 +143,20 @@ public class SysUserService implements UserDetailsService {
             userInfoList.add(userInfo);
         });
         return userInfoList;
+    }
+
+    /**
+     * 删除用户
+     */
+    public void deleteUser(String id) throws Exception {
+        Optional<SysUser> optional = sysUserRepository.findById(id);
+        if (optional.isPresent()) {
+            SysUser sysUser = optional.get();
+            String ADMIN = "admin";
+            if (ADMIN.equals(sysUser.getUsername())) {
+                throw new Exception();
+            }
+            sysUserRepository.deleteById(id);
+        }
     }
 }

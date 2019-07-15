@@ -119,7 +119,7 @@ public class SysUserController {
      * 添加用户
      */
     @RequestMapping(value = "/users", method = RequestMethod.POST)
-    public ResponseEntity register(@RequestBody UserInfo userInfo) {
+    public ResponseEntity addUser(@RequestBody UserInfo userInfo) {
 
         try {
             log.info("添加用户 userInfo: {}", objectMapper.writeValueAsString(userInfo));
@@ -138,6 +138,20 @@ public class SysUserController {
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .data(result)
+                .build(), HttpStatus.OK);
+    }
+
+    /**
+     * 删除用户
+     */
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteUser(@PathVariable String id) {
+        log.info("删除用户: {}", id);
+
+        sysUserService.deleteUser(id);
+
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
                 .build(), HttpStatus.OK);
     }
 }
