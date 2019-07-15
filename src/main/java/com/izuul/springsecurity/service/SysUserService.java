@@ -11,6 +11,7 @@ import com.izuul.springsecurity.repository.SysUserRepository;
 import com.izuul.springsecurity.util.JsonUtil;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -22,6 +23,8 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -87,18 +90,21 @@ public class SysUserService implements UserDetailsService {
     /**
      * 注册
      */
-    public SysUser register(SysUser sysUser) {
-        if (sysUserRepository.findByUsername(sysUser.getUsername()) == null) {
-            SysRole roleUser = sysRoleRepository.findByName("ROLE_USER");
+    public UserInfo addUser(UserInfo userInfo) {
+        if (sysUserRepository.findByUsername(userInfo.getName()) == null) {
+            SysRole sysRole = sysRoleRepository.findByName(userInfo.getRoles().get(0));
+            SysUser sysUser = new SysUser()
+                    .setUsername(userInfo.getName())
+                    .setPassword(passwordEncoder.encode(userInfo.getPassword()))
+                    .setIntroduction(userInfo.getIntroduction())
+                    .setSysRoles(Collections.singletonList(sysRole));
 
-            sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
-            List<SysRole> sysRolesUser = new ArrayList<>();
-            sysRolesUser.add(roleUser);
-            sysUser.setSysRoles(sysRolesUser);
-
-            SysUser user = sysUserRepository.save(sysUser);
-            user.setPassword(null);
-            return user;
+            SysUser save = sysUserRepository.save(sysUser);
+            userInfo.setKey(save.getId())
+                    .setName(save.getUsername())
+                    .setIntroduction(save.getIntroduction())
+                    .setRoleList(save.getSysRoles());
+            return userInfo;
         }
         return null;
     }
@@ -123,5 +129,22 @@ public class SysUserService implements UserDetailsService {
                 .setRoles(roles);
 
         return userInfo;
+    }
+
+    /**
+     * 获取用户列表
+     */
+    public List<UserInfo> getUsers() {
+        List<UserInfo> userInfoList = new ArrayList<>();
+        List<SysUser> sysUserList = sysUserRepository.findAll();
+        sysUserList.forEach(u -> {
+            UserInfo userInfo = new UserInfo();
+            userInfo.setKey(u.getId())
+                    .setName(u.getUsername())
+                    .setIntroduction(u.getIntroduction())
+                    .setRoleList(u.getSysRoles());
+            userInfoList.add(userInfo);
+        });
+        return userInfoList;
     }
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * @author Guihong.Zhang
@@ -48,7 +49,7 @@ public class SysUserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity token(@RequestBody SysUser sysUser) throws AuthenticationException {
-
+        log.info("用户登录 :{}", sysUser.getUsername());
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         sysUser.getUsername(),
@@ -75,7 +76,22 @@ public class SysUserController {
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
-                .data(userInfo).build(), HttpStatus.OK);
+                .data(userInfo)
+                .build(), HttpStatus.OK);
+    }
+
+    /**
+     * 获取用户列表
+     */
+    @RequestMapping(value = "/users", method = RequestMethod.GET)
+    public ResponseEntity users() {
+        log.info("获取用户列表");
+
+        List<UserInfo> users = sysUserService.getUsers();
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .data(users)
+                .build(), HttpStatus.OK);
     }
 
     /**
@@ -100,22 +116,28 @@ public class SysUserController {
     }
 
     /**
-     * 用户注册
+     * 添加用户
      */
-    @RequestMapping(value = "/register", method = RequestMethod.GET)
-    public ResponseEntity register(@RequestBody SysUser sysUser) {
+    @RequestMapping(value = "/users", method = RequestMethod.POST)
+    public ResponseEntity register(@RequestBody UserInfo userInfo) {
 
         try {
-            log.info("创建 user: {}", objectMapper.writeValueAsString(sysUser));
+            log.info("添加用户 userInfo: {}", objectMapper.writeValueAsString(userInfo));
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
-        SysUser user = sysUserService.register(sysUser);
+        UserInfo result = sysUserService.addUser(userInfo);
 
-        if (user == null) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if (result == null) {
+            return new ResponseEntity<>(Result.builder()
+                    .code(CodeEnum.ACCOUNT_PASSWOR_ERROR.getCode())
+                    .message(CodeEnum.ACCOUNT_PASSWOR_ERROR.getMsg())
+                    .build(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .data(result)
+                .build(), HttpStatus.OK);
     }
 }

@@ -82,8 +82,10 @@ public class SysRoleService {
         List<SysRole> sysRoleList = sysRoleRepository.findAll();
         sysRoleList.forEach(r -> {
             RoleInfo roleInfo = new RoleInfo();
-            BeanUtils.copyProperties(r, roleInfo);
-            roleInfo.setKey(r.getId());
+            roleInfo.setKey(r.getId())
+                    .setName(r.getName())
+                    .setDescription(r.getDescription())
+                    .setRoutes(r.getSysRoutes());
             roleInfoList.add(roleInfo);
         });
         return roleInfoList;
