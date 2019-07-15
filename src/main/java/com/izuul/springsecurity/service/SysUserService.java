@@ -11,6 +11,7 @@ import com.izuul.springsecurity.repository.SysUserRepository;
 import com.izuul.springsecurity.util.JsonUtil;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -157,5 +158,37 @@ public class SysUserService implements UserDetailsService {
             }
             sysUserRepository.deleteById(id);
         }
+    }
+
+    /**
+     * 修改用户
+     */
+    public UserInfo updateUser(UserInfo userInfo) {
+        Optional<SysUser> optional = sysUserRepository.findById(userInfo.getKey());
+        if (optional.isPresent()) {
+
+            List<SysRole> sysRoleList = new ArrayList<>();
+            SysRole sysRole = sysRoleRepository.findByName(userInfo.getRoles().get(0));
+            sysRoleList.add(sysRole);
+
+            SysUser sysUser = optional.get();
+            sysUser.setIntroduction(userInfo.getIntroduction())
+                    .setSysRoles(sysRoleList);
+
+            // 判断密码是否为空, 不为空则更新密码
+            if (StringUtils.isNotBlank(userInfo.getPassword())) {
+                sysUser.setPassword(passwordEncoder.encode(userInfo.getPassword()));
+            }
+
+            SysUser save = sysUserRepository.save(sysUser);
+            userInfo.setKey(save.getId())
+                    .setName(save.getUsername())
+                    .setIntroduction(save.getIntroduction())
+                    .setRoleList(save.getSysRoles());
+            return userInfo;
+        }
+        // TODO
+        // 异常处理
+        return null;
     }
 }

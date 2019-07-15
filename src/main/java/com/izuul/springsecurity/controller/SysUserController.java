@@ -161,4 +161,23 @@ public class SysUserController {
                 .code(CodeEnum.SUCCESS.getCode())
                 .build(), HttpStatus.OK);
     }
+
+    /**
+     * 修改用户
+     */
+    @RequestMapping(value = "/users/{id}", method = RequestMethod.PUT)
+    public ResponseEntity updateUser(@PathVariable String id, @RequestBody UserInfo userInfo) {
+        try {
+            log.info("修改用户 id:{} user: {}", id, objectMapper.writeValueAsString(userInfo));
+        } catch (JsonProcessingException e) {
+            log.error("JSON 转化异常: {}", e.getMessage());
+        }
+
+        UserInfo result = sysUserService.updateUser(userInfo);
+
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .data(result)
+                .build(), HttpStatus.OK);
+    }
 }
