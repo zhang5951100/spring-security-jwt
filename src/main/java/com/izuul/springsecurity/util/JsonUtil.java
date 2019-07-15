@@ -21,7 +21,7 @@ public class JsonUtil {
      * @return
      */
     public static String readJsonFile(String fileName) {
-        String path = Objects.requireNonNull(JsonUtil.class.getClassLoader().getResource(fileName)).toString().substring(6);
+        String path = Objects.requireNonNull(JsonUtil.class.getClassLoader().getResource(fileName)).toString().substring(5);
         String jsonStr = "";
         try {
             File jsonFile = new File(path);

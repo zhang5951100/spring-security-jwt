@@ -46,7 +46,14 @@ public class SysRoleService {
     }
 
     /**
-     * 查询 role
+     * 删除 role
+     */
+    public void deleteRole(String id) {
+        sysRoleRepository.deleteById(id);
+    }
+
+    /**
+     * 查询 roles
      */
     public List<RoleInfo> getRoles() {
         List<RoleInfo> roleInfoList = new ArrayList<>();
@@ -63,6 +70,9 @@ public class SysRoleService {
         return roleInfoList;
     }
 
+    /**
+     * 获取路由
+     */
     public List<SysRoute> getRoutes() {
         return sysRouteRepository.findAll();
     }

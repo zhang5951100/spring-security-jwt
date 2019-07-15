@@ -8,10 +8,7 @@ import com.izuul.springsecurity.service.SysRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,6 +21,9 @@ public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
 
+    /**
+     * 创建 role
+     */
     @RequestMapping(value = "/role", method = RequestMethod.POST)
     public ResponseEntity insertRole(@RequestBody RoleInfo roleInfo) {
         RoleInfo result = sysRoleService.insertRole(roleInfo);
@@ -34,6 +34,21 @@ public class SysRoleController {
                 .build(), HttpStatus.OK);
     }
 
+    /**
+     * 删除 role
+     */
+    @RequestMapping(value = "/role/{id}", method = RequestMethod.DELETE)
+    public ResponseEntity deleteRole(@PathVariable String id) {
+        sysRoleService.deleteRole(id);
+
+        return new ResponseEntity<>(Result.builder()
+                .code(CodeEnum.SUCCESS.getCode())
+                .build(), HttpStatus.OK);
+    }
+
+    /**
+     * 查询 roles
+     */
     @RequestMapping(value = "/roles", method = RequestMethod.GET)
     public ResponseEntity role() {
         List<RoleInfo> roles = sysRoleService.getRoles();
@@ -43,6 +58,9 @@ public class SysRoleController {
                 .build(), HttpStatus.OK);
     }
 
+    /**
+     * 获取路由
+     */
     @RequestMapping(value = "/routes", method = RequestMethod.GET)
     public ResponseEntity route() {
         List<SysRoute> sysRoutes = sysRoleService.getRoutes();

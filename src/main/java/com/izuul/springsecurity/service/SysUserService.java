@@ -47,7 +47,7 @@ public class SysUserService implements UserDetailsService {
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
     /**
-     * 初始化2个认证用户
+     * 初始化认证用户
      */
     @PostConstruct
     private void init() {
@@ -76,25 +76,6 @@ public class SysUserService implements UserDetailsService {
             } catch (IOException e) {
                 log.error("初始化route异常: {}", e.getMessage());
             }
-        }
-
-        if (sysUserRepository.findByUsername("user") == null) {
-            SysRole roleUser = new SysRole();
-            roleUser.setName("ROLE_USER");
-            roleUser.setDescription("普通用户");
-            roleUser.setSysRoutes(new ArrayList<>());
-
-            SysUser sysUser = new SysUser();
-            sysUser.setUsername("user");
-            sysUser.setPassword(passwordEncoder.encode("111111"));
-            sysUser.setIntroduction("普通用户");
-            List<SysRole> sysRolesUser = new ArrayList<>();
-            sysRolesUser.add(roleUser);
-            sysUser.setSysRoles(sysRolesUser);
-
-            sysRoleRepository.save(roleUser);
-            sysUserRepository.save(sysUser);
-
         }
     }
 
