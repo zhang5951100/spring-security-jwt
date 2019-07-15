@@ -148,7 +148,14 @@ public class SysUserController {
     public ResponseEntity deleteUser(@PathVariable String id) {
         log.info("删除用户: {}", id);
 
-        sysUserService.deleteUser(id);
+        try {
+            sysUserService.deleteUser(id);
+        } catch (Exception e) {
+            return new ResponseEntity<>(Result.builder()
+                    .code(CodeEnum.NOT_ALLOWED_DELETE.getCode())
+                    .message(CodeEnum.NOT_ALLOWED_DELETE.getMsg())
+                    .build(), HttpStatus.OK);
+        }
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())

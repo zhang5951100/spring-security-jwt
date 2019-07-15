@@ -18,6 +18,10 @@ public enum CodeEnum {
      */
     ACCOUNT_ALREADY_EXISTS(60205, "用户名已存在"),
     /**
+     * 该用户不允许删除
+     */
+    NOT_ALLOWED_DELETE(60206, "该用户不允许删除"),
+    /**
      * 登录失败
      */
     LOGIN_FAILED(50008, "登录失败，无法获取用户详细信息"),

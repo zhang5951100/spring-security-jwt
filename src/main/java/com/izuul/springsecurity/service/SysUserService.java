@@ -11,7 +11,6 @@ import com.izuul.springsecurity.repository.SysUserRepository;
 import com.izuul.springsecurity.util.JsonUtil;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
