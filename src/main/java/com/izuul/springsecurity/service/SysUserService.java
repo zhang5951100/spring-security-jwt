@@ -52,7 +52,7 @@ public class SysUserService implements UserDetailsService {
     private void init() {
 
         if (sysUserRepository.findByUsername("admin") == null) {
-            String json = JsonUtil.readJsonFile("constantRoutes.json");
+            String json = JsonUtil.readJsonFile("routes.json");
             JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, SysRoute.class);
             try {
                 List<SysRoute> sysRouteList = objectMapper.readValue(json, javaType);
