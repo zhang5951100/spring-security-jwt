@@ -19,9 +19,9 @@ public class MyExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public Object kunlunExceptionHandler(Exception e) {
+    public Object myExceptionHandler(Exception e) {
 
-        log.error("kunlunExceptionHandler:{}", e.getMessage());
+        log.error("myExceptionHandler:{}", e.getMessage());
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
