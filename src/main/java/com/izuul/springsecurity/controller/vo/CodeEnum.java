@@ -14,6 +14,10 @@ public enum CodeEnum {
      */
     ACCOUNT_PASSWOR_ERROR(60204, "账号/密码错误"),
     /**
+     * 用户名已存在
+     */
+    ACCOUNT_ALREADY_EXISTS(60205, "用户名已存在"),
+    /**
      * 登录失败
      */
     LOGIN_FAILED(50008, "登录失败，无法获取用户详细信息"),

@@ -130,9 +130,9 @@ public class SysUserController {
 
         if (result == null) {
             return new ResponseEntity<>(Result.builder()
-                    .code(CodeEnum.ACCOUNT_PASSWOR_ERROR.getCode())
-                    .message(CodeEnum.ACCOUNT_PASSWOR_ERROR.getMsg())
-                    .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+                    .code(CodeEnum.ACCOUNT_ALREADY_EXISTS.getCode())
+                    .message(CodeEnum.ACCOUNT_ALREADY_EXISTS.getMsg())
+                    .build(), HttpStatus.OK);
         }
 
         return new ResponseEntity<>(Result.builder()
