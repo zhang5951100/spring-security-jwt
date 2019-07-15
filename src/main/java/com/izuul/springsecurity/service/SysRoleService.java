@@ -53,6 +53,28 @@ public class SysRoleService {
     }
 
     /**
+     * 修改 role
+     */
+    public RoleInfo updateRole(RoleInfo roleInfo) {
+        List<SysRoute> sysRoutes = new ArrayList<>();
+        SysRole sysRole = new SysRole();
+        BeanUtils.copyProperties(roleInfo, sysRole);
+
+        roleInfo.getRoutes().forEach(r -> {
+            Optional<SysRoute> optional = sysRouteRepository.findById(r.getId());
+            optional.ifPresent(sysRoutes::add);
+        });
+
+        sysRole.setId(roleInfo.getKey());
+        sysRole.setSysRoutes(sysRoutes);
+        SysRole save = sysRoleRepository.save(sysRole);
+
+        BeanUtils.copyProperties(save, roleInfo);
+        roleInfo.setKey(save.getId());
+        return roleInfo;
+    }
+
+    /**
      * 查询 roles
      */
     public List<RoleInfo> getRoles() {
@@ -60,11 +82,8 @@ public class SysRoleService {
         List<SysRole> sysRoleList = sysRoleRepository.findAll();
         sysRoleList.forEach(r -> {
             RoleInfo roleInfo = new RoleInfo();
-            roleInfo.setKey(r.getId())
-                    .setName(r.getName())
-                    .setDescription(r.getDescription())
-                    .setRoutes(r.getSysRoutes());
-
+            BeanUtils.copyProperties(r, roleInfo);
+            roleInfo.setKey(r.getId());
             roleInfoList.add(roleInfo);
         });
         return roleInfoList;
