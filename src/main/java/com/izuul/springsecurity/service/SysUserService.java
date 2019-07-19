@@ -6,6 +6,7 @@ import com.izuul.springsecurity.controller.vo.UserInfo;
 import com.izuul.springsecurity.entity.SysRole;
 import com.izuul.springsecurity.entity.SysRoute;
 import com.izuul.springsecurity.entity.SysUser;
+import com.izuul.springsecurity.exception.MyException;
 import com.izuul.springsecurity.repository.SysRoleRepository;
 import com.izuul.springsecurity.repository.SysUserRepository;
 import com.izuul.springsecurity.util.JsonUtil;
@@ -115,7 +116,12 @@ public class SysUserService implements UserDetailsService {
 
         String header = req.getHeader("Authorization");
         String authToken = header.replace("Bearer ", "");
-        String username = jwtTokenUtil.getUsernameFromToken(authToken);
+        String username = null;
+        try {
+            username = jwtTokenUtil.getUsernameFromToken(authToken);
+        } catch (MyException e) {
+            e.printStackTrace();
+        }
 
         SysUser sysUser = (SysUser) this.loadUserByUsername(username);
         sysUser.getSysRoles().forEach(r -> roles.add(r.getName()));

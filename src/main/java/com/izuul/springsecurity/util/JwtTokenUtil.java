@@ -1,5 +1,7 @@
 package com.izuul.springsecurity.util;
 
+import com.izuul.springsecurity.controller.vo.CodeEnum;
+import com.izuul.springsecurity.exception.MyException;
 import io.jsonwebtoken.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -49,11 +51,15 @@ public class JwtTokenUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
-    public String getUsernameFromToken(String authToken) {
-        return Jwts.parser().setSigningKey(SIGNING_KEY)
-                .parseClaimsJws(authToken)
-                .getBody()
-                .getSubject();
+    public String getUsernameFromToken(String authToken) throws MyException {
+        try {
+            return Jwts.parser().setSigningKey(SIGNING_KEY)
+                    .parseClaimsJws(authToken)
+                    .getBody()
+                    .getSubject();
+        } catch (ExpiredJwtException e) {
+            throw new MyException(CodeEnum.TOKEN_EXPIRED.getMsg());
+        }
     }
 
     public boolean validateToken(String authToken, UserDetails userDetails) {

@@ -11,7 +11,6 @@ public class MyException extends Exception {
     private static final long serialVersionUID = 1926439629486459955L;
 
     private HttpStatus httpStatus;
-    private String solution;
 
     /**
      *

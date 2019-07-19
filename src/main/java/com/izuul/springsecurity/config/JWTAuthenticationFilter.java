@@ -1,10 +1,14 @@
 package com.izuul.springsecurity.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.izuul.springsecurity.exception.MyException;
+import com.izuul.springsecurity.util.FailureResponse;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import com.izuul.springsecurity.service.SysUserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -22,6 +26,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private SysUserService sysUserService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private JwtTokenUtil jwtTokenUtil = new JwtTokenUtil();
 
     @Override
@@ -34,11 +41,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
             } catch (IllegalArgumentException e) {
-                logger.error("an error occured during getting username from token", e);
-            } catch (ExpiredJwtException e) {
-                logger.warn("the token is expired and not valid anymore", e);
+                logger.error("从令牌获取用户名期间发生错误", e);
+            } catch (MyException e) {
+                logger.warn("令牌已过期且无效", e);
             } catch(SignatureException e){
-                logger.error("Authentication Failed. Username or Password not valid.");
+                logger.error("身份验证失败。用户名或密码无效.");
             }
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");
@@ -54,7 +61,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 //            }
         }
-
         chain.doFilter(req, res);
     }
 
