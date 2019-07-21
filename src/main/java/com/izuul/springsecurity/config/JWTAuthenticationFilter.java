@@ -2,7 +2,6 @@ package com.izuul.springsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.izuul.springsecurity.exception.MyException;
-import com.izuul.springsecurity.util.FailureResponse;
 import com.izuul.springsecurity.util.JwtTokenUtil;
 import com.izuul.springsecurity.service.SysUserService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -37,29 +36,22 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         String username = null;
         String authToken = null;
         if (header != null && header.startsWith("Bearer ")) {
-            authToken = header.replace("Bearer ","");
-            try {
-                username = jwtTokenUtil.getUsernameFromToken(authToken);
-            } catch (IllegalArgumentException e) {
-                logger.error("从令牌获取用户名期间发生错误", e);
-            } catch (MyException e) {
-                logger.warn("令牌已过期且无效", e);
-            } catch(SignatureException e){
-                logger.error("身份验证失败。用户名或密码无效.");
-            }
+            authToken = header.replace("Bearer ", "");
+            username = jwtTokenUtil.getUsernameFromToken(authToken);
+            logger.info("checking authentication : " + username);
         } else {
             logger.warn("couldn't find bearer string, will ignore the header");
         }
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() != null) {
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
             UserDetails userDetails = sysUserService.loadUserByUsername(username);
 
-//            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authentication = jwtTokenUtil.getAuthentication(authToken, SecurityContextHolder.getContext().getAuthentication(), userDetails);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-//            }
+            }
         }
         chain.doFilter(req, res);
     }

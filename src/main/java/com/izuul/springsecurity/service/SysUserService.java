@@ -117,11 +117,7 @@ public class SysUserService implements UserDetailsService {
         String header = req.getHeader("Authorization");
         String authToken = header.replace("Bearer ", "");
         String username = null;
-        try {
-            username = jwtTokenUtil.getUsernameFromToken(authToken);
-        } catch (MyException e) {
-            e.printStackTrace();
-        }
+        username = jwtTokenUtil.getUsernameFromToken(authToken);
 
         SysUser sysUser = (SysUser) this.loadUserByUsername(username);
         sysUser.getSysRoles().forEach(r -> roles.add(r.getName()));
@@ -129,7 +125,8 @@ public class SysUserService implements UserDetailsService {
         userInfo.setName(sysUser.getUsername())
                 .setAvatar("https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3")
                 .setIntroduction(sysUser.getIntroduction())
-                .setRoles(roles);
+                .setRoles(roles)
+                .setRoleList(sysUser.getSysRoles());
 
         return userInfo;
     }

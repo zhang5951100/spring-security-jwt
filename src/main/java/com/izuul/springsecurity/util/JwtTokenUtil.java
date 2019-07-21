@@ -3,6 +3,7 @@ package com.izuul.springsecurity.util;
 import com.izuul.springsecurity.controller.vo.CodeEnum;
 import com.izuul.springsecurity.exception.MyException;
 import io.jsonwebtoken.*;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,7 +32,7 @@ public class JwtTokenUtil {
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 24 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000))
                 .compact();
     }
 
@@ -51,18 +52,14 @@ public class JwtTokenUtil {
         return new UsernamePasswordAuthenticationToken(userDetails, "", authorities);
     }
 
-    public String getUsernameFromToken(String authToken) throws MyException {
-        try {
-            return Jwts.parser().setSigningKey(SIGNING_KEY)
-                    .parseClaimsJws(authToken)
-                    .getBody()
-                    .getSubject();
-        } catch (ExpiredJwtException e) {
-            throw new MyException(CodeEnum.TOKEN_EXPIRED.getMsg());
-        }
+    public String getUsernameFromToken(String authToken) {
+        return Jwts.parser().setSigningKey(SIGNING_KEY)
+                .parseClaimsJws(authToken)
+                .getBody()
+                .getSubject();
     }
 
     public boolean validateToken(String authToken, UserDetails userDetails) {
-        return false;
+        return StringUtils.equals(userDetails.getUsername(), getUsernameFromToken(authToken));
     }
 }
