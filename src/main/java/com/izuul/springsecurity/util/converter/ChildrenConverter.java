@@ -38,7 +38,7 @@ public class ChildrenConverter implements AttributeConverter<List, String> {
     @Override
     public List convertToEntityAttribute(String dbData) {
         if (StringUtils.isBlank(dbData)) {
-            return new ArrayList();
+            return null;
         }
         try {
             return objectMapper.readValue(dbData, List.class);

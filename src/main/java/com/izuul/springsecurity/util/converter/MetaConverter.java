@@ -37,7 +37,7 @@ public class MetaConverter implements AttributeConverter<Meta, String> {
     @Override
     public Meta convertToEntityAttribute(String dbData) {
         if (StringUtils.isBlank(dbData)) {
-            return new Meta();
+            return null;
         }
         try {
             return objectMapper.readValue(dbData, Meta.class);

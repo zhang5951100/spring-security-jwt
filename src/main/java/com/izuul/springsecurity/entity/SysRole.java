@@ -1,5 +1,6 @@
 package com.izuul.springsecurity.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.GenericGenerator;
@@ -16,6 +17,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @Entity(name = "SYS_ROLE")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SysRole implements GrantedAuthority, Serializable {
 
     private static final long serialVersionUID = -1834111111498772935L;

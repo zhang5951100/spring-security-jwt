@@ -1,5 +1,6 @@
 package com.izuul.springsecurity.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.izuul.springsecurity.util.converter.ChildrenConverter;
 import com.izuul.springsecurity.util.converter.MetaConverter;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
 @Data
 @Accessors(chain = true)
 @Entity(name = "SYS_ROUTE")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class SysRoute implements Serializable {
     private static final long serialVersionUID = 563998596703990469L;
 
