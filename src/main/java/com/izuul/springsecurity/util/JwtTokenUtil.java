@@ -1,7 +1,5 @@
 package com.izuul.springsecurity.util;
 
-import com.izuul.springsecurity.controller.vo.CodeEnum;
-import com.izuul.springsecurity.exception.MyException;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +30,7 @@ public class JwtTokenUtil {
                 .claim(AUTHORITIES_KEY, authorities)
                 .signWith(SignatureAlgorithm.HS256, SIGNING_KEY)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 60 * 1000))
                 .compact();
     }
 

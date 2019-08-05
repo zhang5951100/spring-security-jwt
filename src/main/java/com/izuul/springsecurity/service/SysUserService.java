@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
@@ -58,6 +59,11 @@ public class SysUserService implements UserDetailsService {
             JavaType javaType = objectMapper.getTypeFactory().constructParametricType(List.class, SysRoute.class);
             try {
                 List<SysRoute> sysRouteList = objectMapper.readValue(json, javaType);
+                // 添加创建时间
+                sysRouteList.forEach(r -> {
+                    r.setCreatTime(LocalDateTime.now());
+                    r.setUpdateTime(LocalDateTime.now());
+                });
 
                 SysRole roleAdmin = new SysRole();
                 roleAdmin.setName("ROLE_ADMIN");

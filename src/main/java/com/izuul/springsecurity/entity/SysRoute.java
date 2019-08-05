@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -44,10 +45,16 @@ public class SysRoute implements Serializable {
     private boolean hidden;
 
     @Convert(converter = MetaConverter.class)
-    @Column(name = "META",length = 1024)
+    @Column(name = "META", length = 1024)
     private Meta meta;
 
     @Convert(converter = ChildrenConverter.class)
-    @Column(name = "CHILDREN",length = 2048)
+    @Column(name = "CHILDREN", length = 2048)
     private List<Child> children;
+
+    @Column(name = "CREAT_TIME")
+    private LocalDateTime creatTime;
+
+    @Column(name = "UPDATE_TIME")
+    private LocalDateTime updateTime;
 }

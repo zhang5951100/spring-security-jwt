@@ -1,16 +1,13 @@
 [
   {
     "path": "/permission",
-    "component": "layout/Layout",
-    "redirect": "/permission/index",
-    "alwaysShow": true,
     "meta": {
       "title": "permission",
       "icon": "lock"
     },
     "children": [
       {
-        "path": "directive",
+        "path": "/directive",
         "component": "permission/directive",
         "name": "DirectivePermission",
         "meta": {
@@ -18,34 +15,38 @@
         }
       },
       {
-        "path": "role",
+        "path": "/role",
         "component": "permission/role",
         "name": "RolePermission",
         "meta": {
           "title": "rolePermission"
+        }
+      },
+      {
+        "path": "/menu",
+        "component": "permission/menu",
+        "name": "MenuPermission",
+        "meta": {
+          "title": "menuPermission"
         }
       }
     ]
   },
   {
     "path": "/resource",
-    "component": "layout/Layout",
-    "redirect": "noRedirect",
+    "meta": {
+      "title": "resource",
+      "icon": "documentation"
+    },
     "children": [
       {
         "path": "/resource",
         "component": "resource/resource",
         "name": "Resource",
         "meta": {
-          "title": "resource",
-          "icon": "documentation"
+          "title": "resource"
         }
       }
     ]
-  },
-  {
-    "path": "*",
-    "redirect": "/404",
-    "hidden": true
   }
 ]
