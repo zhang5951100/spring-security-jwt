@@ -49,7 +49,7 @@ public class SysUserController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity token(@RequestBody SysUser sysUser) throws AuthenticationException {
-        log.info("用户登录 :{}", sysUser.getUsername());
+        log.info("用户登录: {}", sysUser.getUsername());
         final Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         sysUser.getUsername(),
@@ -102,6 +102,7 @@ public class SysUserController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             new SecurityContextLogoutHandler().logout(request, response, auth);
+            log.info("退出登录: {}", ((SysUser) auth.getPrincipal()).getUsername());
         }
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
