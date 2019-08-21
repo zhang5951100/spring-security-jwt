@@ -1,6 +1,7 @@
 package com.izuul.springsecurity.service.activity;
 
 import com.izuul.springsecurity.controller.vo.VacationVO;
+import com.izuul.springsecurity.dao.mybatis.VacationMapper;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -11,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +36,9 @@ public class VacationServiceImpl implements ActivityService {
 
     @Autowired
     private ProcessEngine processEngine;
+
+    @Resource
+    private VacationMapper vacationMapper;
 
     @Override
     public <T> void apply(T t) {

@@ -9,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ import java.util.List;
 @Entity(name = "VACATION")
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Vacation extends Application implements Serializable {
+public class Vacation implements Serializable {
 
     private static final long serialVersionUID = 2248469053125414262L;
 
@@ -119,5 +120,47 @@ public class Vacation extends Application implements Serializable {
      */
     @Column(name = "SECOND_APPROVE_DESC")
     private String secondApproveDesc;
+
+    /**
+     * 事件 ID
+     */
+    @Column(name = "TASK_ID")
+    private String taskId;
+
+    /**
+     * 事件 名字
+     */
+    @Column(name = "TASK_NAME")
+    private String taskName;
+
+    /**
+     * 实例 ID
+     */
+    @Column(name = "INSTANCE_ID")
+    private String instanceId;
+
+    /**
+     * 创建时间
+     */
+    @Column(name = "CREATE_TIME")
+    private Date createTime;
+
+    /**
+     * 结束时间
+     */
+    @Column(name = "endTime")
+    private Date endTime;
+
+    /**
+     * 代理人
+     */
+    @Column(name = "assignee")
+    private String assignee;
+
+    /**
+     * 状态
+     */
+    @Column(name = "STATUS")
+    private String status;
 }
 
