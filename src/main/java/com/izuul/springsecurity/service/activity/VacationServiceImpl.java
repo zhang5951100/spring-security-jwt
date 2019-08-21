@@ -1,32 +1,30 @@
 package com.izuul.springsecurity.service.activity;
 
-import com.izuul.springsecurity.entity.activity.Leave;
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.izuul.springsecurity.controller.vo.VacationVO;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.apache.commons.lang3.StringUtils;
+import org.activiti.engine.task.TaskInfo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author: Guihong.Zhang
  * @date: 2019-08-16 10:54
  **/
 @Service
-public class LeaveServiceImpl implements ActivityService {
+public class VacationServiceImpl implements ActivityService {
 
-    private static String VARIABLE_NAME = "leave";
+    private static String VARIABLE_NAME = "vacation";
 
     @Autowired
     private RuntimeService runtimeService;
@@ -39,25 +37,25 @@ public class LeaveServiceImpl implements ActivityService {
 
     @Override
     public <T> void apply(T t) {
-        Leave leave = (Leave) t;
+        VacationVO vacationVO = (VacationVO) t;
         Map<String, Object> vars = new HashMap<>();
-        vars.put("leave", leave);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(leave.getProcessName(), vars);
+        vars.put("vacation", vacationVO);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(vacationVO.getProcessName(), vars);
 
         // 第一个任务节点
         Task task = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
 
-        Leave origin = (Leave) taskService.getVariable(task.getId(), VARIABLE_NAME);
+        VacationVO origin = (VacationVO) taskService.getVariable(task.getId(), VARIABLE_NAME);
 
-        origin.setOperator(leave.getOperator())
-                .setFirstApprover(leave.getOperator())
-                .setDesc(leave.getDesc())
-                .setStartDate(leave.getStartDate())
-                .setEndDate(leave.getEndDate())
-                .setTotalDay(leave.getTotalDay())
+        origin.setOperator(vacationVO.getOperator())
+                .setFirstApprover(vacationVO.getOperator())
+                .setExplanation(vacationVO.getExplanation())
+                .setStartDate(vacationVO.getStartDate())
+                .setEndDate(vacationVO.getEndDate())
+                .setTotalDay(vacationVO.getTotalDay())
                 .setSubmit(true);
 
-        vars.put("leave", origin);
+        vars.put("vacation", origin);
         taskService.complete(task.getId(), vars);
     }
 
@@ -66,54 +64,66 @@ public class LeaveServiceImpl implements ActivityService {
     public <T> List<T> toDoProcess(String operator) {
         List<Task> taskList = taskService.createTaskQuery().taskAssignee(operator).list();
 
-        List<Leave> leaves = new ArrayList<>();
+
+        //根据流程实例ID查询请假申请表单数据
+        List<String> processInstanceIds = taskList.stream()
+                .map(TaskInfo::getProcessInstanceId)
+                .collect(Collectors.toList());
+//        List<VacationApplyBasicPO> vacationApplyList =
+//                vacationRepository.getVacationApplyList(processInstanceIds);
+
+
+        List<VacationVO> VacationVOs = new ArrayList<>();
 
         taskList.forEach(t -> {
-            Leave leave = (Leave) taskService.getVariable(t.getId(), VARIABLE_NAME);
-            leave.setTaskId(t.getId())
+            VacationVO vacationVO = (VacationVO) taskService.getVariable(t.getId(), VARIABLE_NAME);
+            vacationVO.setTaskId(t.getId())
                     .setTaskName(t.getName())
                     .setInstanceId(t.getProcessInstanceId())
                     .setAssignee(t.getAssignee())
                     .setCreateTime(t.getCreateTime());
-            leaves.add(leave);
+            VacationVOs.add(vacationVO);
         });
-        return (List<T>) leaves;
+        return (List<T>) VacationVOs;
     }
 
     @Override
     public <T> void approve(T t) {
-        Leave leave = (Leave) t;
+        VacationVO vacationVO = (VacationVO) t;
 
         // TODO
         // 不用的时候删掉
-        Task task = taskService.createTaskQuery().taskId(leave.getTaskId()).singleResult();
+        Task task = taskService.createTaskQuery().taskId(vacationVO.getTaskId()).singleResult();
         Map<String, Object> vars = new HashMap<>();
 
-        Leave origin = (Leave) taskService.getVariable(leave.getTaskId(), VARIABLE_NAME);
+        VacationVO origin = (VacationVO) taskService.getVariable(vacationVO.getTaskId(), VARIABLE_NAME);
         // 设置下一级审批人
-        BeanUtils.copyProperties(leave, origin);
+        BeanUtils.copyProperties(vacationVO, origin);
         List<String> operators = new ArrayList<>();
         // 模拟多个审批人
         operators.add("admin");
         operators.add("user");
 
         origin.setOperators(operators);
-        vars.put("leave", origin);
+        vars.put("vacation", origin);
 
-        taskService.complete(leave.getTaskId(), vars);
+        taskService.complete(vacationVO.getTaskId(), vars);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <T> List<T> getHistories(String operator) {
-        HistoryService historyService = processEngine.getHistoryService();
 
-        List<HistoricProcessInstance> list = historyService.createHistoricProcessInstanceQuery().processDefinitionKey(VARIABLE_NAME).variableValueEquals("leave.operator", operator).list();
-        List<Leave> leaves = new ArrayList<>();
+        List<HistoricProcessInstance> list = processEngine.getHistoryService()
+                .createHistoricProcessInstanceQuery()
+                .processDefinitionKey(VARIABLE_NAME)
+                .variableValueEquals("vacation.operator", operator).list();
+
+        List<VacationVO> vacationVOs = new ArrayList<>();
         for (HistoricProcessInstance pi : list) {
-            leaves.add((Leave) pi.getProcessVariables().get(VARIABLE_NAME));
+            vacationVOs.add((VacationVO) pi.getProcessVariables().get(VARIABLE_NAME));
         }
-        return (List<T>) leaves;
+        return (List<T>) vacationVOs;
     }
 
     @Override
@@ -128,10 +138,10 @@ public class LeaveServiceImpl implements ActivityService {
                 .taskName("资料提交")
                 // 查询已经完成的任务
                 .list();
-        List<Leave> leaves = new ArrayList<>();
+        List<VacationVO> vacationVOs = new ArrayList<>();
 
         taskInstanceList.forEach(t -> {
-            Leave leave = new Leave();
+            VacationVO vacationVO = new VacationVO();
             // 获取运行时Service
             ProcessInstance pi = processEngine.getRuntimeService()
                     // 创建流程实例查询
@@ -140,19 +150,19 @@ public class LeaveServiceImpl implements ActivityService {
                     .processInstanceId(t.getProcessInstanceId())
                     .singleResult();
             if (pi != null) {
-                leave.setStatus("进行中");
+                vacationVO.setStatus("进行中");
             } else {
-                leave.setStatus("已完成");
+                vacationVO.setStatus("已完成");
             }
 
-            leave.setTaskId(t.getId())
+            vacationVO.setTaskId(t.getId())
                     .setTaskName(t.getName())
                     .setInstanceId(t.getProcessInstanceId())
                     .setAssignee(t.getAssignee())
                     .setCreateTime(t.getCreateTime())
                     .setEndTime(t.getEndTime());
-            leaves.add(leave);
+            vacationVOs.add(vacationVO);
         });
-        return (List<T>) leaves;
+        return (List<T>) vacationVOs;
     }
 }

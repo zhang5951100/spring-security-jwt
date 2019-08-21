@@ -2,7 +2,7 @@ package com.izuul.springsecurity.controller.activity;
 
 import com.izuul.springsecurity.controller.vo.CodeEnum;
 import com.izuul.springsecurity.controller.vo.Result;
-import com.izuul.springsecurity.entity.activity.Leave;
+import com.izuul.springsecurity.controller.vo.VacationVO;
 import com.izuul.springsecurity.service.activity.ActivityService;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.ProcessEngine;
@@ -21,26 +21,26 @@ import java.util.List;
  * @date: 2019-08-16 07:59
  **/
 @RestController
-@RequestMapping("/workflow")
+@RequestMapping("/vacations")
 @Slf4j
-public class LeaveController {
+public class VacationController {
     @Autowired
     private ProcessEngine processEngine;
 
     @Autowired
-    @Qualifier("leaveServiceImpl")
-    private ActivityService leaveServiceImpl;
+    @Qualifier("vacationServiceImpl")
+    private ActivityService vacationServiceImpl;
 
     /**
      * 填写请假单
      *
-     * @param leave
+     * @param vacationVO
      * @return
      */
     @RequestMapping(value = "/applies", method = RequestMethod.POST)
-    public ResponseEntity apply(@RequestBody Leave leave) {
+    public ResponseEntity apply(@RequestBody VacationVO vacationVO) {
 
-        leaveServiceImpl.apply(leave);
+        vacationServiceImpl.apply(vacationVO);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
@@ -56,24 +56,24 @@ public class LeaveController {
      */
     @RequestMapping(value = "/processes/{operator}", method = RequestMethod.GET)
     public ResponseEntity toDoProcess(@PathVariable String operator) {
-        List<Leave> leaves = leaveServiceImpl.toDoProcess(operator);
+        List<VacationVO> vacationVOs = vacationServiceImpl.toDoProcess(operator);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
-                .data(leaves)
+                .data(vacationVOs)
                 .build(), HttpStatus.OK);
     }
 
     /**
      * 审批
      *
-     * @param leave
+     * @param vacationVO
      * @return
      */
     @RequestMapping(value = "/approvals", method = RequestMethod.POST)
-    public ResponseEntity approve(@RequestBody Leave leave) {
-        leaveServiceImpl.approve(leave);
+    public ResponseEntity approve(@RequestBody VacationVO vacationVO) {
+        vacationServiceImpl.approve(vacationVO);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
@@ -89,12 +89,12 @@ public class LeaveController {
      */
     @RequestMapping(value = "/histories", method = RequestMethod.GET)
     public ResponseEntity getHistories(@RequestParam("operator") String operator) {
-        List<Leave> leaves = leaveServiceImpl.getHistories(operator);
+        List<VacationVO> vacations = vacationServiceImpl.getHistories(operator);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
-                .data(leaves)
+                .data(vacations)
                 .build(), HttpStatus.OK);
     }
 
@@ -105,15 +105,15 @@ public class LeaveController {
      * @param operator
      * @return
      */
-    @RequestMapping(value = "/leaves/{operator}", method = RequestMethod.GET)
+    @RequestMapping(value = "/vacations/{operator}", method = RequestMethod.GET)
     public ResponseEntity getMyLeaves(@PathVariable String operator) {
 
-        List<Leave> leaves = leaveServiceImpl.getMyLeaves(operator);
+        List<VacationVO> vacations = vacationServiceImpl.getMyLeaves(operator);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
-                .data(leaves)
+                .data(vacations)
                 .build(), HttpStatus.OK);
     }
 

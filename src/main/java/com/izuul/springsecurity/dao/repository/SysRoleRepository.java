@@ -1,4 +1,4 @@
-package com.izuul.springsecurity.repository;
+package com.izuul.springsecurity.dao.repository;
 
 import com.izuul.springsecurity.entity.SysRole;
 import org.springframework.data.jpa.repository.JpaRepository;

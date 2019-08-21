@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.izuul.springsecurity.dao.mybatis.VacationMapper">
+  <resultMap id="BaseResultMap" type="com.izuul.springsecurity.entity.activity.Vacation">
+    <!--@mbg.generated-->
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="explanation" jdbcType="VARCHAR" property="explanation" />
+    <result column="first_agree" jdbcType="BIT" property="firstAgree" />
+    <result column="first_approve_desc" jdbcType="VARCHAR" property="firstApproveDesc" />
+    <result column="first_approver" jdbcType="VARCHAR" property="firstApprover" />
+    <result column="operator" jdbcType="VARCHAR" property="operator" />
+    <result column="operator_id" jdbcType="VARCHAR" property="operatorId" />
+    <result column="operators" jdbcType="VARCHAR" property="operators" />
+    <result column="process_name" jdbcType="VARCHAR" property="processName" />
+    <result column="second_agree" jdbcType="BIT" property="secondAgree" />
+    <result column="second_approve_desc" jdbcType="VARCHAR" property="secondApproveDesc" />
+    <result column="second_approver" jdbcType="VARCHAR" property="secondApprover" />
+    <result column="start_date" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="submit" jdbcType="BIT" property="submit" />
+    <result column="total_day" jdbcType="DOUBLE" property="totalDay" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    id, end_date, explanation, first_agree, first_approve_desc, first_approver, `operator`, 
+    operator_id, operators, process_name, second_agree, second_approve_desc, second_approver, 
+    start_date, submit, total_day
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <!--@mbg.generated-->
+    select 
+    <include refid="Base_Column_List" />
+    from vacation
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    <!--@mbg.generated-->
+    delete from vacation
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.izuul.springsecurity.entity.activity.Vacation">
+    <!--@mbg.generated-->
+    insert into vacation (id, end_date, explanation, 
+      first_agree, first_approve_desc, first_approver, 
+      `operator`, operator_id, operators, 
+      process_name, second_agree, second_approve_desc, 
+      second_approver, start_date, submit, 
+      total_day)
+    values (#{id,jdbcType=VARCHAR}, #{endDate,jdbcType=TIMESTAMP}, #{explanation,jdbcType=VARCHAR}, 
+      #{firstAgree,jdbcType=BIT}, #{firstApproveDesc,jdbcType=VARCHAR}, #{firstApprover,jdbcType=VARCHAR}, 
+      #{operator,jdbcType=VARCHAR}, #{operatorId,jdbcType=VARCHAR}, #{operators,jdbcType=VARCHAR}, 
+      #{processName,jdbcType=VARCHAR}, #{secondAgree,jdbcType=BIT}, #{secondApproveDesc,jdbcType=VARCHAR}, 
+      #{secondApprover,jdbcType=VARCHAR}, #{startDate,jdbcType=TIMESTAMP}, #{submit,jdbcType=BIT}, 
+      #{totalDay,jdbcType=DOUBLE})
+  </insert>
+  <insert id="insertSelective" parameterType="com.izuul.springsecurity.entity.activity.Vacation">
+    <!--@mbg.generated-->
+    insert into vacation
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="endDate != null">
+        end_date,
+      </if>
+      <if test="explanation != null">
+        explanation,
+      </if>
+      <if test="firstAgree != null">
+        first_agree,
+      </if>
+      <if test="firstApproveDesc != null">
+        first_approve_desc,
+      </if>
+      <if test="firstApprover != null">
+        first_approver,
+      </if>
+      <if test="operator != null">
+        `operator`,
+      </if>
+      <if test="operatorId != null">
+        operator_id,
+      </if>
+      <if test="operators != null">
+        operators,
+      </if>
+      <if test="processName != null">
+        process_name,
+      </if>
+      <if test="secondAgree != null">
+        second_agree,
+      </if>
+      <if test="secondApproveDesc != null">
+        second_approve_desc,
+      </if>
+      <if test="secondApprover != null">
+        second_approver,
+      </if>
+      <if test="startDate != null">
+        start_date,
+      </if>
+      <if test="submit != null">
+        submit,
+      </if>
+      <if test="totalDay != null">
+        total_day,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="endDate != null">
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="explanation != null">
+        #{explanation,jdbcType=VARCHAR},
+      </if>
+      <if test="firstAgree != null">
+        #{firstAgree,jdbcType=BIT},
+      </if>
+      <if test="firstApproveDesc != null">
+        #{firstApproveDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="firstApprover != null">
+        #{firstApprover,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="operators != null">
+        #{operators,jdbcType=VARCHAR},
+      </if>
+      <if test="processName != null">
+        #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="secondAgree != null">
+        #{secondAgree,jdbcType=BIT},
+      </if>
+      <if test="secondApproveDesc != null">
+        #{secondApproveDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="secondApprover != null">
+        #{secondApprover,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submit != null">
+        #{submit,jdbcType=BIT},
+      </if>
+      <if test="totalDay != null">
+        #{totalDay,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.izuul.springsecurity.entity.activity.Vacation">
+    <!--@mbg.generated-->
+    update vacation
+    <set>
+      <if test="endDate != null">
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="explanation != null">
+        explanation = #{explanation,jdbcType=VARCHAR},
+      </if>
+      <if test="firstAgree != null">
+        first_agree = #{firstAgree,jdbcType=BIT},
+      </if>
+      <if test="firstApproveDesc != null">
+        first_approve_desc = #{firstApproveDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="firstApprover != null">
+        first_approver = #{firstApprover,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+        `operator` = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorId != null">
+        operator_id = #{operatorId,jdbcType=VARCHAR},
+      </if>
+      <if test="operators != null">
+        operators = #{operators,jdbcType=VARCHAR},
+      </if>
+      <if test="processName != null">
+        process_name = #{processName,jdbcType=VARCHAR},
+      </if>
+      <if test="secondAgree != null">
+        second_agree = #{secondAgree,jdbcType=BIT},
+      </if>
+      <if test="secondApproveDesc != null">
+        second_approve_desc = #{secondApproveDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="secondApprover != null">
+        second_approver = #{secondApprover,jdbcType=VARCHAR},
+      </if>
+      <if test="startDate != null">
+        start_date = #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="submit != null">
+        submit = #{submit,jdbcType=BIT},
+      </if>
+      <if test="totalDay != null">
+        total_day = #{totalDay,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.izuul.springsecurity.entity.activity.Vacation">
+    <!--@mbg.generated-->
+    update vacation
+    set end_date = #{endDate,jdbcType=TIMESTAMP},
+      explanation = #{explanation,jdbcType=VARCHAR},
+      first_agree = #{firstAgree,jdbcType=BIT},
+      first_approve_desc = #{firstApproveDesc,jdbcType=VARCHAR},
+      first_approver = #{firstApprover,jdbcType=VARCHAR},
+      `operator` = #{operator,jdbcType=VARCHAR},
+      operator_id = #{operatorId,jdbcType=VARCHAR},
+      operators = #{operators,jdbcType=VARCHAR},
+      process_name = #{processName,jdbcType=VARCHAR},
+      second_agree = #{secondAgree,jdbcType=BIT},
+      second_approve_desc = #{secondApproveDesc,jdbcType=VARCHAR},
+      second_approver = #{secondApprover,jdbcType=VARCHAR},
+      start_date = #{startDate,jdbcType=TIMESTAMP},
+      submit = #{submit,jdbcType=BIT},
+      total_day = #{totalDay,jdbcType=DOUBLE}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>
