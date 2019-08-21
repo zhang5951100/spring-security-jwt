@@ -51,7 +51,7 @@ public class Vacation implements Serializable {
     /**
      * 当前事件操作者们
      */
-    @Column(name = "OPERATORS",length = 1024)
+    @Column(name = "OPERATORS", length = 1024)
     @Convert(converter = ChildrenConverter.class)
     private List<String> operators;
 
@@ -74,10 +74,16 @@ public class Vacation implements Serializable {
     private LocalDateTime endDate;
 
     /**
-     * 假期天数
+     * 假期时长
      */
-    @Column(name = "TOTAL_DAY")
-    private double totalDay;
+    @Column(name = "TOTAL_HOUR")
+    private double totalHour;
+
+    /**
+     * 请假类型
+     */
+    @Column(name = "TYPE")
+    private String type;
 
     /**
      * 请假描述

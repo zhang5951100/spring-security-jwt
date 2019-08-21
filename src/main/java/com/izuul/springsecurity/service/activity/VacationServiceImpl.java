@@ -1,7 +1,8 @@
 package com.izuul.springsecurity.service.activity;
 
 import com.izuul.springsecurity.controller.vo.VacationVO;
-import com.izuul.springsecurity.dao.mybatis.VacationMapper;
+import com.izuul.springsecurity.dao.repository.VacationRepository;
+import com.izuul.springsecurity.entity.activity.Vacation;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -12,7 +13,6 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,27 +37,37 @@ public class VacationServiceImpl implements ActivityService {
     @Autowired
     private ProcessEngine processEngine;
 
-    @Resource
-    private VacationMapper vacationMapper;
+    @Autowired
+    private VacationRepository vacationRepository;
 
     @Override
     public <T> void apply(T t) {
         VacationVO vacationVO = (VacationVO) t;
+        vacationVO.setProcessName("请假");
         Map<String, Object> vars = new HashMap<>();
         vars.put("vacation", vacationVO);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(vacationVO.getProcessName(), vars);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(VARIABLE_NAME, vars);
+
+        //启动完成后对数据做记录
+        this.saveVacation(vacationVO, processInstance);
 
         // 第一个任务节点
         Task task = processEngine.getTaskService().createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).singleResult();
 
         VacationVO origin = (VacationVO) taskService.getVariable(task.getId(), VARIABLE_NAME);
 
+        List<String> operators = new ArrayList<>();
+        // 模拟多个审批人
+        operators.add("admin");
+        operators.add("user");
+
         origin.setOperator(vacationVO.getOperator())
+                .setOperators(operators)
                 .setFirstApprover(vacationVO.getOperator())
                 .setExplanation(vacationVO.getExplanation())
                 .setStartDate(vacationVO.getStartDate())
                 .setEndDate(vacationVO.getEndDate())
-                .setTotalDay(vacationVO.getTotalDay())
+                .setTotalHour(vacationVO.getTotalHour())
                 .setSubmit(true);
 
         vars.put("vacation", origin);
@@ -74,9 +84,7 @@ public class VacationServiceImpl implements ActivityService {
         List<String> processInstanceIds = taskList.stream()
                 .map(TaskInfo::getProcessInstanceId)
                 .collect(Collectors.toList());
-//        List<VacationApplyBasicPO> vacationApplyList =
-//                vacationRepository.getVacationApplyList(processInstanceIds);
-
+        List<Vacation> vacationList = vacationRepository.findAllByInstanceIdIn(processInstanceIds);
 
         List<VacationVO> VacationVOs = new ArrayList<>();
 
@@ -155,7 +163,7 @@ public class VacationServiceImpl implements ActivityService {
                     .processInstanceId(t.getProcessInstanceId())
                     .singleResult();
             if (pi != null) {
-                vacationVO.setStatus("进行中");
+                vacationVO.setStatus("审批中");
             } else {
                 vacationVO.setStatus("已完成");
             }
@@ -169,5 +177,18 @@ public class VacationServiceImpl implements ActivityService {
             vacationVOs.add(vacationVO);
         });
         return (List<T>) vacationVOs;
+    }
+
+    /**
+     * 存储 Vacation
+     *
+     * @param vacationVO
+     * @param processInstance
+     */
+    private void saveVacation(VacationVO vacationVO, ProcessInstance processInstance) {
+        Vacation vacation = new Vacation();
+        BeanUtils.copyProperties(vacationVO, vacation);
+        vacation.setInstanceId(processInstance.getProcessInstanceId());
+        vacationRepository.save(vacation);
     }
 }

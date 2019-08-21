@@ -58,9 +58,14 @@ public class VacationVO implements Serializable {
     private LocalDateTime endDate;
 
     /**
-     * 假期天数
+     * 假期时长
      */
-    private double totalDay;
+    private double totalHour;
+
+    /**
+     * 假期类型
+     */
+    private String type;
 
     /**
      * 请假描述
