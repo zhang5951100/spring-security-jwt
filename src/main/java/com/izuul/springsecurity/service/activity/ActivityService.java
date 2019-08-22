@@ -33,16 +33,16 @@ public interface ActivityService {
     /**
      * 获取历史流程
      *
-     * @param operator
-     * @param <T>
+     * @param operator 操作人
+     * @param <T> 申请实例
      * @return
      */
     <T> List<T> getHistories(String operator);
 
     /**
      * 我发起的流程
-     * @param operator
-     * @param <T>
+     * @param operator 操作人
+     * @param <T> 申请实例
      * @return
      */
     <T> List<T> getMyLeaves(String operator);

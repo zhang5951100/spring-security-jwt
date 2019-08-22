@@ -49,13 +49,14 @@ public class VacationController {
     }
 
     /**
-     * 查询用户代办流程
+     * 查询用户待办流程
      *
-     * @param operator
-     * @return
+     * @param operator 操作人
+     * @return ResponseEntity
      */
     @RequestMapping(value = "/processes/{operator}", method = RequestMethod.GET)
     public ResponseEntity toDoProcess(@PathVariable String operator) {
+
         List<VacationVO> vacationVOs = vacationServiceImpl.toDoProcess(operator);
 
         return new ResponseEntity<>(Result.builder()
@@ -73,6 +74,7 @@ public class VacationController {
      */
     @RequestMapping(value = "/approvals", method = RequestMethod.POST)
     public ResponseEntity approve(@RequestBody VacationVO vacationVO) {
+
         vacationServiceImpl.approve(vacationVO);
 
         return new ResponseEntity<>(Result.builder()
@@ -84,11 +86,12 @@ public class VacationController {
     /**
      * 查看历史记录
      *
-     * @param operator
+     * @param operator 操作人
      * @return
      */
     @RequestMapping(value = "/histories", method = RequestMethod.GET)
     public ResponseEntity getHistories(@RequestParam("operator") String operator) {
+
         List<VacationVO> vacations = vacationServiceImpl.getHistories(operator);
 
         return new ResponseEntity<>(Result.builder()
@@ -102,7 +105,7 @@ public class VacationController {
     /**
      * 查看以发布流程
      *
-     * @param operator
+     * @param operator 操作人
      * @return
      */
     @RequestMapping(value = "/vacations/{operator}", method = RequestMethod.GET)
@@ -118,9 +121,12 @@ public class VacationController {
     }
 
     public void getHistoryProcessInstance() {
-        HistoricProcessInstance hpi = processEngine.getHistoryService() // 历史任务Service
-                .createHistoricProcessInstanceQuery() // 创建历史流程实例查询
-                .processInstanceId("2501") // 指定流程实例ID
+        // 历史任务Service
+        HistoricProcessInstance hpi = processEngine.getHistoryService()
+                // 创建历史流程实例查询
+                .createHistoricProcessInstanceQuery()
+                // 指定流程实例ID
+                .processInstanceId("2501")
                 .singleResult();
         System.out.println("流程实例ID:" + hpi.getId());
         System.out.println("创建时间：" + hpi.getStartTime());
@@ -129,10 +135,14 @@ public class VacationController {
 
 
     public void historyActInstanceList(String processInstanceId) {
-        List<HistoricActivityInstance> list = processEngine.getHistoryService() // 历史任务Service
-                .createHistoricActivityInstanceQuery() // 创建历史活动实例查询
-                .processInstanceId(processInstanceId) // 指定流程实例id
-                .finished() // 查询已经完成的任务
+        // 历史任务Service
+        List<HistoricActivityInstance> list = processEngine.getHistoryService()
+                // 创建历史活动实例查询
+                .createHistoricActivityInstanceQuery()
+                // 指定流程实例id
+                .processInstanceId(processInstanceId)
+                // 查询已经完成的任务
+                .finished()
                 .list();
         for (HistoricActivityInstance hai : list) {
             System.out.println("任务ID:" + hai.getId());

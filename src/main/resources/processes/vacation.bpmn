@@ -2,7 +2,11 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1565912910889" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="vacation" isClosed="false" isExecutable="true" name="请假" processType="None">
     <startEvent id="_2" name="开始"/>
-    <userTask activiti:assignee="${vacation.firstApprover}" activiti:exclusive="true" id="_3" name="一级审批"/>
+    <userTask activiti:assignee="${op}" activiti:exclusive="true" id="_3" name="一级审批">
+      <multiInstanceLoopCharacteristics activiti:collection="${vacation.operators}" activiti:elementVariable="op" isSequential="false">
+        <completionCondition><![CDATA[${nrOfCompletedInstances/nrOfInstances>0} ]]></completionCondition>
+      </multiInstanceLoopCharacteristics>
+    </userTask>
     <userTask activiti:assignee="${op}" activiti:exclusive="true" id="_4" name="二级审批">
       <multiInstanceLoopCharacteristics activiti:collection="${vacation.operators}" activiti:elementVariable="op" isSequential="false">
         <completionCondition><![CDATA[${nrOfCompletedInstances/nrOfInstances>0} ]]></completionCondition>
@@ -23,11 +27,11 @@
     <sequenceFlow id="_13" name="取消" sourceRef="_10" targetRef="_5">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.submit==false}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_14" name="拒绝" sourceRef="_3" targetRef="_10">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.firstAgree==false}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="_15" name="拒绝" sourceRef="_4" targetRef="_10">
+    <sequenceFlow id="_15" name="拒绝" sourceRef="_4" targetRef="_3">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.secondAgree==false}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="_6" name="拒绝" sourceRef="_3" targetRef="_5">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.firstAgree==false}]]></conditionExpression>
     </sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#3C3F41;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
@@ -77,18 +81,18 @@
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_15" id="BPMNEdge__15" sourceElement="_4" targetElement="_10">
+      <bpmndi:BPMNEdge bpmnElement="_15" id="BPMNEdge__15" sourceElement="_4" targetElement="_3">
         <omgdi:waypoint x="405.0" y="467.5"/>
         <omgdi:waypoint x="320.0" y="345.0"/>
-        <omgdi:waypoint x="405.0" y="212.5"/>
+        <omgdi:waypoint x="405.0" y="345.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="_14" id="BPMNEdge__14" sourceElement="_3" targetElement="_10">
+      <bpmndi:BPMNEdge bpmnElement="_6" id="BPMNEdge__6" sourceElement="_3" targetElement="_5">
         <omgdi:waypoint x="405.0" y="347.5"/>
-        <omgdi:waypoint x="360.0" y="285.0"/>
-        <omgdi:waypoint x="405.0" y="212.5"/>
+        <omgdi:waypoint x="290.0" y="470.0"/>
+        <omgdi:waypoint x="435.0" y="591.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
