@@ -1,8 +1,10 @@
 package com.izuul.springsecurity.controller.activity;
 
+import com.github.pagehelper.PageInfo;
 import com.izuul.springsecurity.controller.vo.CodeEnum;
 import com.izuul.springsecurity.controller.vo.Result;
 import com.izuul.springsecurity.controller.vo.VacationVO;
+import com.izuul.springsecurity.entity.activity.Vacation;
 import com.izuul.springsecurity.service.activity.ActivityService;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.ProcessEngine;
@@ -51,13 +53,13 @@ public class VacationController {
     /**
      * 查询用户待办流程
      *
-     * @param operator 操作人
+     * @param applicantId 操作人ID
      * @return ResponseEntity
      */
-    @RequestMapping(value = "/processes/{operator}", method = RequestMethod.GET)
-    public ResponseEntity toDoProcess(@PathVariable String operator) {
+    @RequestMapping(value = "/processes/{applicantId}", method = RequestMethod.GET)
+    public ResponseEntity toDoProcess(@PathVariable String applicantId) {
 
-        List<VacationVO> vacationVOs = vacationServiceImpl.toDoProcess(operator);
+        List<VacationVO> vacationVOs = vacationServiceImpl.toDoProcess(applicantId);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
@@ -105,18 +107,19 @@ public class VacationController {
     /**
      * 查看以发布流程
      *
-     * @param operator 操作人
+     * @param applicantId 操作人
      * @return
      */
-    @RequestMapping(value = "/vacations/{operator}", method = RequestMethod.GET)
-    public ResponseEntity getMyLeaves(@PathVariable String operator) {
+    @RequestMapping(value = "/vacations/{applicantId}/{page}/{size}", method = RequestMethod.GET)
+    public ResponseEntity getMyLeaves(@PathVariable String applicantId,
+                                      @PathVariable int page, @PathVariable int size) {
 
-        List<VacationVO> vacations = vacationServiceImpl.getMyLeaves(operator);
+        PageInfo pageInfo = vacationServiceImpl.getMyLeaves(applicantId, page, size);
 
         return new ResponseEntity<>(Result.builder()
                 .code(CodeEnum.SUCCESS.getCode())
                 .message(CodeEnum.SUCCESS.getMsg())
-                .data(vacations)
+                .data(pageInfo)
                 .build(), HttpStatus.OK);
     }
 

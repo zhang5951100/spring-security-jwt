@@ -30,12 +30,12 @@ public class VacationVO implements Serializable {
     /**
      * 当前事件操作者
      */
-    private String operator;
+    private String applicant;
 
     /**
      * 当前事件操作者ID
      */
-    private String operatorId;
+    private String applicantId;
 
     /**
      * 当前事件操作者们

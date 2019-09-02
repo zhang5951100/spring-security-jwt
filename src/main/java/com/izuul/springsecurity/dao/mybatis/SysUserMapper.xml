@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.izuul.springsecurity.dao.mybatis.SysUserMapper">
+    <resultMap id="BaseResultMap" type="com.izuul.springsecurity.entity.SysUser">
+        <!--@mbg.generated-->
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="introduction" jdbcType="VARCHAR" property="introduction"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, introduction, `password`, username
+    </sql>
+    <select id="findAllbyRole" resultType="string">
+    select ur.user_id id
+        from sys_role sr
+                 left join user_role ur on sr.id = ur.role_id
+        where sr.name = #{role,jdbcType=VARCHAR}
+  </select>
+</mapper>

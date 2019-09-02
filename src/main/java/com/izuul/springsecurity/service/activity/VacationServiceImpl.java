@@ -1,22 +1,29 @@
 package com.izuul.springsecurity.service.activity;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.izuul.springsecurity.controller.vo.ActivityEnum;
 import com.izuul.springsecurity.controller.vo.VacationVO;
+import com.izuul.springsecurity.dao.mybatis.SysUserMapper;
+import com.izuul.springsecurity.dao.mybatis.VacationMapper;
+import com.izuul.springsecurity.dao.repository.SysUserRepository;
 import com.izuul.springsecurity.dao.repository.VacationRepository;
+import com.izuul.springsecurity.entity.SysRole;
+import com.izuul.springsecurity.entity.SysUser;
 import com.izuul.springsecurity.entity.activity.Vacation;
 import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.Resource;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author: Guihong.Zhang
@@ -39,13 +46,17 @@ public class VacationServiceImpl implements ActivityService {
     @Autowired
     private VacationRepository vacationRepository;
 
+    @Resource
+    private VacationMapper vacationMapper;
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
+
     @Override
     public <T> void apply(T t) {
-
-        List<String> operators = new ArrayList<>();
-        // 模拟多个审批人
-        operators.add("admin");
-        operators.add("user");
+        // 获取一个角色的所有用户 id
+        // 这些人作为审批人
+        List<String> operators = sysUserMapper.findAllbyRole("ROLE_ADMIN");
 
         VacationVO req = (VacationVO) t;
         req.setProcessName("请假")
@@ -73,8 +84,8 @@ public class VacationServiceImpl implements ActivityService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> List<T> toDoProcess(String operator) {
-        List<Task> taskList = taskService.createTaskQuery().taskAssignee(operator)
+    public <T> List<T> toDoProcess(String applicantId) {
+        List<Task> taskList = taskService.createTaskQuery().taskAssignee(applicantId)
                 .orderByTaskCreateTime().desc().list();
 
 
@@ -104,7 +115,7 @@ public class VacationServiceImpl implements ActivityService {
 
         // TODO
         // 不用的时候删掉
-        Task task = taskService.createTaskQuery().taskId(vacationVO.getTaskId()).singleResult();
+//        Task task = taskService.createTaskQuery().taskId(vacationVO.getTaskId()).singleResult();
         Map<String, Object> vars = new HashMap<>();
 
 //        VacationVO origin = (VacationVO) taskService.getVariable(vacationVO.getTaskId(), VARIABLE_NAME);
@@ -113,6 +124,24 @@ public class VacationServiceImpl implements ActivityService {
         vars.put("vacation", vacationVO);
 
         taskService.complete(vacationVO.getTaskId(), vars);
+
+        if (vacationVO.getFirstAgree() != null && !vacationVO.getFirstAgree()) {
+            Optional<Vacation> optional = vacationRepository.findById(vacationVO.getId());
+            if (optional.isPresent()) {
+                Vacation vacation = optional.get();
+                vacation.setStatus(ActivityEnum.REJECT.getName());
+                vacationRepository.save(vacation);
+            }
+        }
+
+        if (vacationVO.getSecondAgree() != null && vacationVO.getSecondAgree()) {
+            Optional<Vacation> optional = vacationRepository.findById(vacationVO.getId());
+            if (optional.isPresent()) {
+                Vacation vacation = optional.get();
+                vacation.setStatus(ActivityEnum.PASS.getName());
+                vacationRepository.save(vacation);
+            }
+        }
     }
 
     @Override
@@ -133,42 +162,10 @@ public class VacationServiceImpl implements ActivityService {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T> List<T> getMyLeaves(String operator) {
-        // 历史任务Service
-        List<HistoricTaskInstance> taskInstanceList = processEngine.getHistoryService()
-                // 创建历史任务实例查询
-                .createHistoricTaskInstanceQuery()
-                // 指定办理人
-                .taskAssignee(operator)
-                .taskName("资料提交")
-                // 查询已经完成的任务
-                .list();
-        List<VacationVO> vacationVOs = new ArrayList<>();
-
-        taskInstanceList.forEach(t -> {
-            VacationVO vacationVO = new VacationVO();
-            // 获取运行时Service
-            ProcessInstance pi = processEngine.getRuntimeService()
-                    // 创建流程实例查询
-                    .createProcessInstanceQuery()
-                    // 用流程实例ID查询
-                    .processInstanceId(t.getProcessInstanceId())
-                    .singleResult();
-            if (pi != null) {
-                vacationVO.setStatus("审批中");
-            } else {
-                vacationVO.setStatus("已完成");
-            }
-
-            vacationVO.setTaskId(t.getId())
-                    .setTaskName(t.getName())
-                    .setInstanceId(t.getProcessInstanceId())
-                    .setAssignee(t.getAssignee())
-                    .setCreateTime(t.getCreateTime())
-                    .setEndTime(t.getEndTime());
-            vacationVOs.add(vacationVO);
-        });
-        return (List<T>) vacationVOs;
+    public PageInfo getMyLeaves(String userId, int page, int size) {
+        PageHelper.startPage(page, size);
+        List<Vacation> vacations = vacationMapper.findAllByUserId(userId);
+        return new PageInfo(vacations);
     }
 
     /**
@@ -180,7 +177,8 @@ public class VacationServiceImpl implements ActivityService {
     private Vacation saveVacation(VacationVO vacationVO, ProcessInstance processInstance) {
         Vacation vacation = new Vacation();
         BeanUtils.copyProperties(vacationVO, vacation);
-        vacation.setInstanceId(processInstance.getProcessInstanceId());
+        vacation.setInstanceId(processInstance.getProcessInstanceId())
+                .setCreateTime(LocalDateTime.now());
         return vacationRepository.save(vacation);
     }
 }

@@ -19,7 +19,7 @@
     <sequenceFlow id="_8" name="通过" sourceRef="_4" targetRef="_5">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.secondAgree==true}]]></conditionExpression>
     </sequenceFlow>
-    <userTask activiti:assignee="${vacation.operator}" activiti:exclusive="true" id="_10" name="资料提交"/>
+    <userTask activiti:assignee="${vacation.applicantId}" activiti:exclusive="true" id="_10" name="资料提交"/>
     <sequenceFlow id="_11" sourceRef="_2" targetRef="_10"/>
     <sequenceFlow id="_12" name="提交" sourceRef="_10" targetRef="_3">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${vacation.submit==true}]]></conditionExpression>

@@ -9,7 +9,6 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,14 +38,14 @@ public class Vacation implements Serializable {
     /**
      * 当前事件操作者
      */
-    @Column(name = "OPERATOR")
-    private String operator;
+    @Column(name = "APPLICANT")
+    private String applicant;
 
     /**
      * 当前事件操作者ID
      */
-    @Column(name = "OPERATOR_ID")
-    private String operatorId;
+    @Column(name = "APPLICANT_ID")
+    private String applicantId;
 
     /**
      * 当前事件操作者们
@@ -149,13 +148,13 @@ public class Vacation implements Serializable {
      * 创建时间
      */
     @Column(name = "CREATE_TIME")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 结束时间
      */
     @Column(name = "endTime")
-    private Date endTime;
+    private LocalDateTime endTime;
 
     /**
      * 代理人

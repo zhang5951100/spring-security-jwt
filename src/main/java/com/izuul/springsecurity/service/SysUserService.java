@@ -127,7 +127,8 @@ public class SysUserService implements UserDetailsService {
         SysUser sysUser = (SysUser) this.loadUserByUsername(username);
         sysUser.getSysRoles().forEach(r -> roles.add(r.getName()));
 
-        userInfo.setName(sysUser.getUsername())
+        userInfo.setKey(sysUser.getId())
+                .setName(sysUser.getUsername())
                 .setAvatar("https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3")
                 .setIntroduction(sysUser.getIntroduction())
                 .setRoles(roles)

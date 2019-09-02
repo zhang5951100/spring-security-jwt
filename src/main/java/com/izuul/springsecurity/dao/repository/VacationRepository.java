@@ -12,4 +12,6 @@ import java.util.List;
 public interface VacationRepository extends JpaRepository<Vacation, String> {
 
     List<Vacation> findAllByInstanceIdIn(List<String> ids);
+
+    List<Vacation> findAllByApplicantIdOrderByCreateTimeDesc(String applicantId);
 }

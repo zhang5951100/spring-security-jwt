@@ -1,5 +1,8 @@
 package com.izuul.springsecurity.service.activity;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
+
 import java.util.List;
 
 /**
@@ -18,10 +21,10 @@ public interface ActivityService {
     /**
      * 待处理流程
      *
-     * @param operator 操作人
+     * @param applicantId 操作人
      * @return 申请实例
      */
-    <T> List<T> toDoProcess(String operator);
+    <T> List<T> toDoProcess(String applicantId);
 
     /**
      * 审批
@@ -34,16 +37,17 @@ public interface ActivityService {
      * 获取历史流程
      *
      * @param operator 操作人
-     * @param <T> 申请实例
+     * @param <T>      申请实例
      * @return
      */
     <T> List<T> getHistories(String operator);
 
     /**
      * 我发起的流程
-     * @param operator 操作人
-     * @param <T> 申请实例
+     *
+     * @param applicantId 申请人 ID
+     * @param <T>         申请实例
      * @return
      */
-    <T> List<T> getMyLeaves(String operator);
+    <T> PageInfo<T> getMyLeaves(String applicantId, int page, int size);
 }
